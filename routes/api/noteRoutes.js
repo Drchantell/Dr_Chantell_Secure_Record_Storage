@@ -2,10 +2,10 @@ const router = require('express').Router();
 const { Note } = require('../../models');
 const { authMiddleware } = require('../../utils/auth');
 
-// Every notes route requires the user to be logged in.
+// I protect these routes so the user has to be logged in.
 router.use(authMiddleware);
 
-// GET /api/notes - Return only notes owned by the logged-in user.
+// I only return notes that belong to the current user.
 router.get('/', async (req, res) => {
   try {
     const notes = await Note.find({ user: req.user._id });
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/notes/:id - Optional single-note route with ownership protection.
+// I only return this note if it belongs to the current user.
 router.get('/:id', async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
@@ -36,7 +36,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/notes - Create a note and assign it to the logged-in user.
+// I create a new note and save the current user's ID with it.
 router.post('/', async (req, res) => {
   try {
     const note = await Note.create({
@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/notes/:id - Only the owner can update the note.
+// I only let the note owner update it.
 router.put('/:id', async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
@@ -65,7 +65,7 @@ router.put('/:id', async (req, res) => {
       });
     }
 
-    // Do not allow the request body to change note ownership.
+    // I leave out the user field so the note owner stays the same.
     const { user, ...updates } = req.body;
 
     const updatedNote = await Note.findByIdAndUpdate(
@@ -80,7 +80,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/notes/:id - Only the owner can delete the note.
+// I only let the note owner delete it.
 router.delete('/:id', async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);

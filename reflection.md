@@ -1,17 +1,19 @@
 Secure Record Storage Reflection
 
+In this lab, I learned more about how authentication and authorization work together.
 
-In this lab, I learned the difference between authentication and authorization. Authentication checks that a user is logged in. Authorization checks what that logged-in user is allowed to do.
+Authentication checks that I am logged in. Authorization checks what I am allowed to do after I log in.
 
-The biggest change I made was adding the user field to each note. This lets the API remember which user owns each note. When a user creates a note, I save req.user._id with the note.
+One of the main things I learned was how to connect each note to the user who created it. I did this by adding a user field to the Note model and saving req.user._id with each new note.
 
-I also learned how to protect routes by comparing the note owner's ID with the logged-in user's ID. If the IDs do not match, the API sends a 403 Forbidden response. This stops one user from updating or deleting another user's notes.
+I also learned how to protect records so one user cannot update or delete another user's note. I compared the note owner's ID with the logged-in user's ID before allowing those changes.
 
-The GET route was also important because it originally returned every note in the database. I changed it so it only searches for notes that belong to the logged-in user.
+Another important part of this lab was the GET route. I made sure it only returns notes that belong to the logged-in user instead of returning every note in the database.
 
-This lab helped me understand why secure applications need both authentication and authorization. A user being logged in does not mean they should have access to every record in the database.
+I used MongoDB Atlas for the database and Mongoose to connect my app to MongoDB and create my models.
 
+I also used timestamps: true in my Note model. This lets Mongoose automatically add createdAt and updatedAt fields to each note.
 
-Author: 
-Dr. Chantell McDowell, 
-Per Scholas Student
+This lab was challenging because I had to learn how several parts work together, including JWT tokens, bcrypt, MongoDB, Mongoose, and route protection. After working through it, I understand much better how to keep user records private and secure.
+
+Author: Dr. Chantell McDowell, Per Scholas Student

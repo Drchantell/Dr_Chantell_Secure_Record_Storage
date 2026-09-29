@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { User } = require('../../models');
 const { signToken } = require('../../utils/auth');
 
-// POST /api/users/register - Create a new user.
+// This route lets me create a new user.
 router.post('/register', async (req, res) => {
   try {
     const user = await User.create(req.body);
@@ -14,7 +14,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// POST /api/users/login - Log in and return a token.
+// This route lets me log a user in and return a token.
 router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });

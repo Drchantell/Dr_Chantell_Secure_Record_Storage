@@ -1,45 +1,97 @@
- Secure Record Storage API
+Secure Record Storage API
 
-A notes API built with Express, MongoDB, and JWT authentication. Users can only view, update, or delete their own notes.
+Project Overview
 
-Setup
+For this lab, I built a secure notes API using Node.js, Express, MongoDB Atlas, Mongoose, bcrypt, and JSON Web Tokens.
 
-1. Install dependencies:
+My main goal was to make sure each user could only see and manage their own notes. I connected every note to the user who created it by saving that user's ID with the note.
 
-   ```sh
-   npm install
-   ```
+What I Learned
 
-2. Create a `.env` file in the project folder:
+I learned that authentication and authorization are not the same thing.
 
-   ```env
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_long_random_secret
-   PORT=3001
-   ```
+Authentication checks that I am logged in.
 
-3. Start the server:
+Authorization checks what I am allowed to access or change after I log in.
 
-   ```sh
-   npm start
-   ```
+I also learned how to connect a note to its owner by using req.user._id when the note is created.
 
- API
+How I Used MongoDB and Mongoose
 
-- `POST /api/users/register` - Create an account.
-- `POST /api/users/login` - Log in.
-- `GET /api/notes` - List your notes.
-- `GET /api/notes/:id` - Get one of your notes.
-- `POST /api/notes` - Create a note.
-- `PUT /api/notes/:id` - Update one of your notes.
-- `DELETE /api/notes/:id` - Delete one of your notes.
+I used MongoDB Atlas as my database.
 
-For note routes, send the token returned by register or login as a bearer token:
+I used Mongoose to connect my Express app to MongoDB and to create my User and Note models.
 
-```http
+My Note model uses timestamps: true, so Mongoose automatically adds createdAt and updatedAt to each note.
+
+Security Features
+
+- I used bcrypt to hash passwords before saving them.
+- I used JWT tokens to protect the note routes.
+- I made sure users only get their own notes.
+- I blocked users from updating or deleting another user's notes.
+- I return a 403 response when a user tries to access a note they do not own.
+- I keep my .env file out of GitHub with .gitignore.
+- I removed the password field from user JSON responses so the password hash is not sent back by the API.
+
+API Routes
+
+POST /api/users/register
+
+I use this route when I want to create a new user account.
+
+POST /api/users/login
+
+I use this route to log in and receive a JWT token.
+
+GET /api/notes
+
+I use this route to get only the notes that belong to the logged-in user.
+
+GET /api/notes/:id
+
+I use this route to get one note if it belongs to the logged-in user.
+
+POST /api/notes
+
+I use this route to create a new note and connect it to the logged-in user.
+
+PUT /api/notes/:id
+
+I use this route to update a note only if the logged-in user owns it.
+
+DELETE /api/notes/:id
+
+I use this route to delete a note only if the logged-in user owns it.
+
+How I Run the Project
+
+1. I install the dependencies with:
+
+npm install
+
+2. I create a .env file and add:
+
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+PORT=3001
+
+3. I start the server with:
+
+npm start
+
+4. I use Postman or another API testing tool to test my routes.
+
+For protected note routes, I send my JWT token in the Authorization header:
+
 Authorization: Bearer YOUR_TOKEN
-```
 
-To check ownership, create a note with one account, then try to access or change it using a second account. The second account should not be able to change that note.
+Challenges
 
-Keep your `.env` file and its secrets private.
+One challenge for me was understanding the difference between simply being logged in and actually having permission to change a record.
+
+I solved this by adding a user field to the Note model and saving req.user._id when a note is created. Then I compared the note owner's ID with the logged-in user's ID before allowing an update or delete.
+
+I also had to understand how JWT authentication, MongoDB, Mongoose, and environment variables work together. This project helped me see how each part connects to make an API more secure.
+
+Author: Dr. Chantell McDowell, Per Scholas Student
